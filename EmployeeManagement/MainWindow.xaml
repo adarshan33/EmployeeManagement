@@ -11,6 +11,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Label Content="Id" VerticalAlignment="Center" Width="100" Margin="5"/>
@@ -46,7 +47,7 @@
             </StackPanel>
             <Button x:Name="btnAdd" Content="Add Employee" Width="150" Margin="5" Click="btnAdd_Click" RenderTransformOrigin="0.464,-0.974"/>
         </StackPanel>
-        <DataGrid Grid.Row="1" x:Name="EmployeesGrid" AutoGenerateColumns="False" Margin="0,244,0,0">
+        <DataGrid Grid.Row="1" x:Name="EmployeesGrid" AutoGenerateColumns="False" Margin="0,236,0,0">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding id}" Width="80"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding name}" Width="80"/>
@@ -55,5 +56,18 @@
                 <DataGridTextColumn Header="Status" Binding="{Binding status}" Width="80"/>
             </DataGrid.Columns>
         </DataGrid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+            <Button x:Name="btnPrevPage" Content="Prev" Width="50" Margin="5" Click="BtnPrevPage_Click"/>
+            <ComboBox x:Name="pageDropdown" ItemsSource="{Binding PageNumbers}" SelectedIndex="{Binding CurrentPage}" Width="75" Margin="5" SelectionChanged="PageDropdown_SelectionChanged"/>
+            <ItemsControl ItemsSource="{Binding CurrentPageData}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+            <Button x:Name="btnNextPage" Content="Next" Width="50" Margin="5" Click="BtnNextPage_Click"/>
+        </StackPanel>
+
     </Grid>
 </Window>

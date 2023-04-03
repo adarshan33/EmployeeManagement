@@ -22,17 +22,23 @@ namespace EmployeeManagement
     /// </summary>
     public partial class MainWindow : Window
     {
-        EmployeeService employeeService = new EmployeeService();
+        private EmployeeViewPageModel _viewModel;
+        private EmployeeService employeeService;
 
         public MainWindow()
         {
             InitializeComponent();
+            _viewModel = new EmployeeViewPageModel();
+            DataContext = _viewModel;
+            employeeService= new EmployeeService();
         }
 
         private async void GetDetailsButton_Click(object sender, RoutedEventArgs e)
         {
-           List<Employee> employees =  await employeeService.GetAllEmployees();
+            List<Employee> employees = await employeeService.GetAllEmployees();
             EmployeesGrid.ItemsSource = employees;
+            await _viewModel.RefreshPageNumbers();
+
         }
 
         private async void BtnSearch_Click(object sender, RoutedEventArgs e)
@@ -83,7 +89,6 @@ namespace EmployeeManagement
 
             try
             {
-               // EmployeeService employeeService = new EmployeeService();
                 var addedEmployee = await employeeService.CreateEmployee(newEmployee);
                 MessageBox.Show($"Added employee");             
             }
@@ -101,13 +106,46 @@ namespace EmployeeManagement
             if (isDeleted)
             {
                 MessageBox.Show("Employee deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                List<Employee> employees= await employeeService.GetAllEmployees();
+                List<Employee> employees = await employeeService.GetAllEmployees();
                 EmployeesGrid.ItemsSource = employees;
             }
             else
             {
                 MessageBox.Show("Failed to delete employee.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
+            }
+        }
+
+        private void BtnPrevPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel.CurrentPage >= 1)
+            {
+                _viewModel.CurrentPage--;
+            }
+        }
+
+        private void BtnNextPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel.CurrentPage < _viewModel.PageNumbers.Count)
+            {
+                _viewModel.CurrentPage++;
+            }
+        }
+
+        private async void PageDropdown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (pageDropdown.SelectedIndex != -1)
+            {
+                int page = (int)pageDropdown.SelectedItem;
+                try
+                {
+                    List<Employee> employees = await employeeService.GetEmployeesByPage(page);
+                    EmployeesGrid.ItemsSource = employees;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to retrieve employees. Error message: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 

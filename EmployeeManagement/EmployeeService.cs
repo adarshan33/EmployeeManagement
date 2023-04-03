@@ -30,6 +30,15 @@ namespace EmployeeManagement
             return apiResponse.Data;
         }
 
+        public async Task<List<Employee>> GetEmployeesByPage(int pageNumber)
+        {
+            var response = await _httpClient.GetAsync($"users?page={pageNumber}");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            EmployeeApiResponse apiResponse = JsonConvert.DeserializeObject<EmployeeApiResponse>(json);
+            return apiResponse.Data;
+        }
+
         public async Task<Employee> GetEmployeeById(int id)
         {
             var response = await _httpClient.GetAsync($"users/{id}");
@@ -72,6 +81,15 @@ namespace EmployeeManagement
             json = await response.Content.ReadAsStringAsync();
             var emp = JsonConvert.DeserializeObject<EmployeeApiSearchResponse>(json);
             return emp.Data;
+        }
+
+        public async Task<int> GetTotalEmployees()
+        {
+            var response = await _httpClient.GetAsync("users");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            EmployeeApiResponse apiResponse = JsonConvert.DeserializeObject<EmployeeApiResponse>(json);
+            return apiResponse.Meta.Pagination.Total;
         }
     }
 }
