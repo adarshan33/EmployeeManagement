@@ -11,7 +11,7 @@ namespace EmployeeManagement
 {
     public class EmployeeService
     {
-        private readonly HttpClient _httpClient;
+        internal HttpClient _httpClient;
 
         public EmployeeService()
         {
@@ -82,6 +82,16 @@ namespace EmployeeManagement
             var emp = JsonConvert.DeserializeObject<EmployeeApiSearchResponse>(json);
             return emp.Data;
         }
+
+        public async Task<bool> UpdateEmployee(int Id,Employee employee)
+        {
+            var json = JsonConvert.SerializeObject(employee);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync($"users/{Id}", content);
+            response.EnsureSuccessStatusCode();
+            return response.IsSuccessStatusCode;
+        }
+
 
         public async Task<int> GetTotalEmployees()
         {

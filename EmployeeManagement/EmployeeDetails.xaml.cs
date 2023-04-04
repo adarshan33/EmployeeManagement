@@ -18,14 +18,16 @@ using System.Windows.Shapes;
 namespace EmployeeManagement
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for EmployeeDetailsa.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class EmployeeDetails : Window
     {
         private EmployeeViewPageModel _viewModel;
         private EmployeeService employeeService;
 
-        public MainWindow()
+        public Employee SelectedEmployee { get; private set; }
+
+        public EmployeeDetails()
         {
             InitializeComponent();
             _viewModel = new EmployeeViewPageModel();
@@ -115,6 +117,47 @@ namespace EmployeeManagement
 
             }
         }
+
+        private async void Update_Click(object sender, RoutedEventArgs e)
+        {
+
+            var newEmployee = new Employee
+            {
+                id = SelectedEmployee.id,
+                name = txName.Text,
+                email = txEmail.Text,
+                gender = cGender.Text,
+                status = cStatus.Text
+            };
+
+            try
+            {
+                bool updated = await employeeService.UpdateEmployee(newEmployee.id,newEmployee);
+                if (updated)
+                {
+                    MessageBox.Show($"Updated employee");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Not Updated");
+            }
+        }
+
+        private void EditEmployee_Click(object sender, RoutedEventArgs e)
+        {
+            // Get the selected row
+            var selectedRow = (sender as Button).DataContext as Employee;
+
+            // Set the values in the update employee grid
+            txName.Text = selectedRow.name;
+            txEmail.Text = selectedRow.email;
+            cGender.Text = selectedRow.gender;
+            cStatus.Text = selectedRow.status;
+
+            SelectedEmployee = selectedRow;
+        }
+
 
         private void BtnPrevPage_Click(object sender, RoutedEventArgs e)
         {

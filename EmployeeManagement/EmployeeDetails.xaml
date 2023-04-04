@@ -1,4 +1,4 @@
-﻿<Window x:Class="EmployeeManagement.MainWindow"      
+﻿<Window x:Class="EmployeeManagement.EmployeeDetails"      
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -45,8 +45,40 @@
                     <ComboBoxItem Content="Inactive"/>
                 </ComboBox>
             </StackPanel>
-            <Button x:Name="btnAdd" Content="Add Employee" Width="150" Margin="5" Click="btnAdd_Click" RenderTransformOrigin="0.464,-0.974"/>
+
+            <Button x:Name="btnAdd" Content="Add Employee" Width="150" Margin="5" Click="btnAdd_Click" />
+
         </StackPanel>
+        <StackPanel Grid.Row="1" Margin="400,16,0,0">
+            <Label Content="update Employee" FontSize="16"/>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Label Content="Name:" VerticalAlignment="Center" Width="100"/>
+                <TextBox x:Name="txName" Width="200" Margin="5" Text="{Binding SelectedEmployee.name, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Label Content="Email:" VerticalAlignment="Center" Width="100"/>
+                <TextBox x:Name="txEmail" Width="200" Margin="5" Text="{Binding SelectedEmployee.email, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Label Content="Gender:" VerticalAlignment="Center" Width="100"/>
+                <TextBox x:Name="cGender" Width="200" Margin="5" Text="{Binding SelectedEmployee.cGender, UpdateSourceTrigger=PropertyChanged}"/>
+                <!--<ComboBox x:Name="cGender" Width="200" Margin="5" SelectedValue="{Binding SelectedEmployee.gender, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBoxItem Content="Male"/>
+                    <ComboBoxItem Content="Female"/>
+                </ComboBox>-->
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Label Content="Status:" VerticalAlignment="Center" Width="100"/>
+                <!--<ComboBox x:Name="cStatus" Width="200" Margin="5" SelectedValue="{Binding SelectedEmployee.status, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBoxItem Content="Active"/>
+                    <ComboBoxItem Content="Inactive"/>
+                </ComboBox>-->
+                <TextBox x:Name="cStatus" Width="200" Margin="5" Text="{Binding SelectedEmployee.cStatus, UpdateSourceTrigger=PropertyChanged}"/>
+
+            </StackPanel>
+            <Button x:Name="btnUpdate" Content="Update Employee" Width="150" Margin="5" Click="Update_Click"/>
+        </StackPanel>
+
         <DataGrid Grid.Row="1" x:Name="EmployeesGrid" AutoGenerateColumns="False" Margin="0,236,0,0">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding id}" Width="80"/>
@@ -54,6 +86,13 @@
                 <DataGridTextColumn Header="Email" Binding="{Binding email}" Width="80"/>
                 <DataGridTextColumn Header="Gender" Binding="{Binding gender}" Width="80"/>
                 <DataGridTextColumn Header="Status" Binding="{Binding status}" Width="80"/>
+                <DataGridTemplateColumn Header="Action">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Edit" Click="EditEmployee_Click"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
