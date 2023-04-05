@@ -11,6 +11,7 @@ using NUnit.Framework;
 
 namespace EmployeeManagement
 {
+    [TestFixture]
     public class EmployeeServiceTests
     {
         private Mock<HttpClient> _httpClientMock;
@@ -20,7 +21,8 @@ namespace EmployeeManagement
         public void Setup()
         {
             _httpClientMock = new Mock<HttpClient>();
-            _employeeService = new EmployeeService { _httpClient = _httpClientMock.Object };
+            _employeeService = new EmployeeService();
+            _employeeService._httpClient = _httpClientMock.Object;
         }
 
 
@@ -37,7 +39,7 @@ namespace EmployeeManagement
                 }
             };
             var json = JsonConvert.SerializeObject(expectedResponse);
-            _httpClientMock.Setup(x => x.GetAsync("http://mockapi.com/employees", It.IsAny<CancellationToken>()))
+            _httpClientMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
       .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
       {
           Content = new StringContent(json)
@@ -68,7 +70,7 @@ namespace EmployeeManagement
         public async Task DeleteEmployee_ReturnsTrueWhenSuccessful()
         {
             // Arrange
-            var id = "1";
+            int id = 1;
             _httpClientMock.Setup(c => c.DeleteAsync($"users/{id}")).ReturnsAsync(new HttpResponseMessage { StatusCode = System.Net.HttpStatusCode.NoContent });
 
             // Act

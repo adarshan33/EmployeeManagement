@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,8 +18,9 @@ namespace EmployeeManagement
         {
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri("https://gorest.co.in/public-api/");
+            string apiToken = ConfigurationManager.AppSettings["ApiToken"];
             _httpClient.DefaultRequestHeaders.Authorization =
-             new AuthenticationHeaderValue("Bearer", "fa114107311259f5f33e70a5d85de34a2499b4401da069af0b1d835cd5ec0d56");
+             new AuthenticationHeaderValue("Bearer", apiToken);
         }
 
         public async Task<List<Employee>> GetAllEmployees()
@@ -57,13 +59,18 @@ namespace EmployeeManagement
             return apiResponse.Data;
         }
 
-        public async Task<bool> DeleteEmployee(string id)
+        public async Task<bool> DeleteEmployee(int id)
         {
             try
             {
                 var response = await _httpClient.DeleteAsync($"users/{id}");
-                response.EnsureSuccessStatusCode();
-                return true;
+                var json = await response.Content.ReadAsStringAsync();
+                EmployeeApiSearchResponse employee = JsonConvert.DeserializeObject<EmployeeApiSearchResponse>(json);
+                if (employee.Data == null)
+                {
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
@@ -88,8 +95,13 @@ namespace EmployeeManagement
             var json = JsonConvert.SerializeObject(employee);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"users/{Id}", content);
-            response.EnsureSuccessStatusCode();
-            return response.IsSuccessStatusCode;
+            var updatedResponse = await response.Content.ReadAsStringAsync();
+            EmployeeApiSearchResponse result = JsonConvert.DeserializeObject<EmployeeApiSearchResponse>(updatedResponse);
+            if(result.Code == 200) 
+            {
+                return true;
+            }        
+            return false;
         }
 
 

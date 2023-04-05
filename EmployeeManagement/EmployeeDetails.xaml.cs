@@ -96,25 +96,31 @@ namespace EmployeeManagement
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Given Employee Details are Already added");
+                MessageBox.Show($"Given Employee Details are Already added or incorrect format");
             }
         }
 
         private async void DeleteEmployee_Click(object sender, RoutedEventArgs e)
         {
-            string idToDelete = txtSearch.Text;
-            bool isDeleted = await employeeService.DeleteEmployee(idToDelete);
-
-            if (isDeleted)
+            if (int.TryParse(txtSearch.Text, out int id))
             {
-                MessageBox.Show("Employee deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                List<Employee> employees = await employeeService.GetAllEmployees();
-                EmployeesGrid.ItemsSource = employees;
+                bool isDeleted = await employeeService.DeleteEmployee(id);
+
+                if (isDeleted)
+                {
+                    MessageBox.Show("Employee deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    List<Employee> employees = await employeeService.GetAllEmployees();
+                    EmployeesGrid.ItemsSource = employees;
+                }
+                else
+                {
+                    MessageBox.Show("Failed to delete employee.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                }
             }
             else
             {
-                MessageBox.Show("Failed to delete employee.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
+                MessageBox.Show("Failed to delete employee.");
             }
         }
 
@@ -137,10 +143,14 @@ namespace EmployeeManagement
                 {
                     MessageBox.Show($"Updated employee");
                 }
+                else
+                {
+                    MessageBox.Show($"Not Updated Please provide in correct format");
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Not Updated");
+                MessageBox.Show($"Not Updated Please provide in correct format");
             }
         }
 
