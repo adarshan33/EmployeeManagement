@@ -1,8 +1,10 @@
-﻿using System;
+﻿using EmployeeManagement.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +14,13 @@ namespace EmployeeManagement
     {
         private int _currentPage;
         private List<int> _pageNumbers;
+
+        private IEmployeeService employeeService;
+
+        public EmployeeViewPageModel(IEmployeeService employeeService)
+        {
+            this.employeeService = employeeService;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -34,7 +43,7 @@ namespace EmployeeManagement
         public async Task RefreshPageNumbers()
         {
             var pageSize = 10; 
-            var totalEmployees = await new EmployeeService().GetTotalEmployees();
+            var totalEmployees = await employeeService.GetTotalEmployees();
             var totalPages = (int)Math.Ceiling((double)totalEmployees / pageSize);
             PageNumbers = Enumerable.Range(1, totalPages).ToList();
         }

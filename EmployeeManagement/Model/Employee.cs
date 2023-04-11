@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeManagement
+namespace EmployeeManagement.Model
 {
     public class Employee
     {
@@ -18,7 +18,7 @@ namespace EmployeeManagement
     public class EmployeeApiResponse
     {
         public int Code { get; set; }
-        public ApiMeta Meta { get; set; }
+        public ApiMeta? Meta { get; set; }
         public List<Employee> Data { get; set; }
 
     }
@@ -39,7 +39,7 @@ namespace EmployeeManagement
     public class EmployeeApiSearchResponse
     {
         public int Code { get; set; }
-        public object Meta { get; set; }
+        public object? Meta { get; set; }
         public Employee Data { get; set; }
     }
 
