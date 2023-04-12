@@ -14,13 +14,11 @@ namespace EmployeeManagement.Model
 {
     public class EmployeeService : IEmployeeService
     {
-        //   public HttpClient _httpClient;
         private readonly HttpClient _httpClient;
 
 
         public EmployeeService(HttpMessageHandler handler = null)
         {
-            //_httpClient = new HttpClient();
             _httpClient = handler != null ? new HttpClient(handler) : new HttpClient();
             _httpClient.BaseAddress = new Uri("https://gorest.co.in/public-api/");
             string apiToken = ConfigurationManager.AppSettings["ApiToken"];
@@ -102,7 +100,6 @@ namespace EmployeeManagement.Model
             }
             catch
             {
-                // Handle exception
                 return false;
             }
         }
@@ -145,7 +142,6 @@ namespace EmployeeManagement.Model
             }
             else
             {
-                // Handle null value as needed
                 return 0;
             }
         }
